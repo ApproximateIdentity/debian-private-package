@@ -1,0 +1,40 @@
+Example of "Private" Debian Packging of Python Package
+======================================================
+
+This is a bare-bones example of how to use debian packaging to hide the
+underlying python module code and instead only "export" a single binary
+entry-point.
+
+This is basically a stripped down version coming from the offlineimap package
+currently (as of this commit) found in debian sid.
+
+This has only been tested with debian jessie. First clone this repository and
+(importantly!) do not change the name of the root folder. I.e. this README
+should sit in a folder called `debian-private-repo`. You should be able
+build/install this package as follows (run in the root of the repository):
+
+```
+$ sudo apt-get update
+$ sudo apt-get install debhelper devscripts python3-dev python3-setuptools
+$ debuild -uc -us -b
+$ sudo dpkg -i ../package_0.0.0-1_all.deb
+```
+
+Test it by executing:
+
+```
+$ package_script
+func
+```
+
+Note that you cannot directly import the module unless you explicitly add its
+folder to the path (execute the following _outside_ of the root directory of
+the repository):
+
+```
+$ python3 -m package
+/usr/bin/python3: No module named package
+$ PYTHONPATH=/usr/share/package python3 -m package
+/usr/bin/python3: No module named package.__main__; 'package' is a package and
+cannot be directly executed
+```

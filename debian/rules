@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+
+export PYBUILD_NAME=package
+
+# The package lib is installed to a private directory.
+export PYBUILD_INSTALL_ARGS=--install-lib=/usr/share/package/
+
+# Scripts should be installed to the same private directory.
+# This causes python to add that same directory to sys.path when executing the
+# script. The script will symlinked to in the `debian/package.links` folder.
+export PYBUILD_AFTER_INSTALL=\
+    mv {destdir}/usr/bin/package_script {destdir}/usr/share/package
+
+
+%:
+	dh $@ --with python3 --buildsystem pybuild
